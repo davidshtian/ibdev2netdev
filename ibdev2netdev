@@ -40,7 +40,6 @@ function find_pdev()
 	for pdev in $pdevlist; do
 		if [ -d /sys/bus/pci/devices/$pdev/infiniband ]; then
 			ibd=$(ls /sys/bus/pci/devices/$pdev/infiniband/)
-			echo "x$ibd x$1"
 			if [ "x$ibd" == "x$1" ]; then
 				echo -n $pdev
 			fi
