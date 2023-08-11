@@ -90,11 +90,23 @@ for d in $devs; do
 	fi
 done
 
+tmp_ib=''
+tmp_eth=''
+
 if [ "x$oldstyle" == "xn" ]; then
 	for d in $ibdevs; do
 		ibrsc=$(grep 'PCI_SLOT_NAME' /sys/class/infiniband/$d/device/uevent | awk -F ':' '{print $2}')
 		eths=$(ls /sys/class/net/)
 		for eth in $eths; do
+			if [ "x$d" == "x$tmp_ib" ]; then
+				tmp_ib=''
+				continue
+			fi
+
+			if [ "x$eth" == "x$tmp_eth" ]; then
+				tmp_eth=''
+				continue
+			fi
 			filepath_resource=/sys/class/net/$eth/device/uevent
 
 			if [ -f $filepath_resource ]; then
@@ -103,6 +115,8 @@ if [ "x$oldstyle" == "xn" ]; then
 					filepath_devid=/sys/class/net/$eth/dev_id
 					filepath_devport=/sys/class/net/$eth/dev_port
 					if [ -f $filepath_devid ]; then
+						tmp_eth=$eth
+						tmp_ib=$d
 						port1=0
 						if [ -f $filepath_devport ]; then
 							port1=$(cat $filepath_devport)
