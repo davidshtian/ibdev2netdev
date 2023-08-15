@@ -97,13 +97,9 @@ done
 
 if [ "x$oldstyle" == "xn" ]; then
 	eths=$(ls /sys/class/net/)
-	for eth in $eths; do
-		filepath_resource=/sys/class/net/$eth/device/net/$eth/address
-
-		for d in $ibdevs; do
-		ibrsc=$(grep 'PCI_SLOT_NAME' /sys/class/infiniband/$d/device/uevent | awk -F ':' '{print $2}')
-			
-
+	for d in $ibdevs; do
+	        for eth in $eths; do
+		        filepath_resource=/sys/class/net/$eth/device/net/$eth/address
 			if [ -f $filepath_resource ]; then
 				ethrsc=$(cat $filepath_resource)
 				ipv6addr=$(mac_to_ipv6_ll $ethrsc)
